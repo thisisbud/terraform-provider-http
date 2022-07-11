@@ -97,8 +97,6 @@ checks are available with Terraform v1.2.0 and later.
 
 ### Required
 
-- `DefaultInitialInterval` (String) The initial exponential backoff interval.
-- `DefaultMaxElapsedTime` (String) The total maximum number of seconds before a timeout.
 - `url` (String) The URL for the request. Supported schemes are `http` and `https`.
 
 ### Optional

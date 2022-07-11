@@ -78,17 +78,17 @@ your control should be treated as untrustworthy.`,
 				Computed:    true,
 			},
 
-			"DefaultInitialInterval": {
-				Description: "The initial exponential backoff interval.",
-				Type:        types.StringType,
-				Required:    false,
-			},
+			// "DefaultInitialInterval": {
+			// 	Description: "The initial exponential backoff interval.",
+			// 	Type:        types.StringType,
+			// 	Required:    false,
+			// },
 
-			"DefaultMaxElapsedTime": {
-				Description: "The total maximum number of seconds before a timeout.",
-				Type:        types.StringType,
-				Required:    false,
-			},
+			// "DefaultMaxElapsedTime": {
+			// 	Description: "The total maximum number of seconds before a timeout.",
+			// 	Type:        types.StringType,
+			// 	Required:    false,
+			// },
 
 			// DefaultRandomizationFactor
 			// DefaultMultiplier
