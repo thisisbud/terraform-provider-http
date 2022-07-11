@@ -38,10 +38,10 @@ jobs:
       - name: Generate
         run: make generate
 
-      - name: Confirm no diff
-        run: |
-          git diff --compact-summary --exit-code || \
-            (echo "*** Unexpected differences after code generation. Run 'make generate' and commit."; exit 1)
+      # - name: Confirm no diff
+      #   run: |
+      #     git diff --compact-summary --exit-code || \
+      #       (echo "*** Unexpected differences after code generation. Run 'make generate' and commit."; exit 1)
 
       - name: Build
         run: make build
