@@ -81,13 +81,13 @@ your control should be treated as untrustworthy.`,
 			"DefaultInitialInterval": {
 				Description: "The initial exponential backoff interval.",
 				Type:        types.StringType,
-				Required:    true,
+				Required:    false,
 			},
 
 			"DefaultMaxElapsedTime": {
 				Description: "The total maximum number of seconds before a timeout.",
 				Type:        types.StringType,
-				Required:    true,
+				Required:    false,
 			},
 
 			// DefaultRandomizationFactor
