@@ -144,7 +144,7 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 
 	var response *http.Response
 
-	backoff.Retry(func() error {
+	err = backoff.Retry(func() error {
 		fmt.Printf("Calling http.Do function")
 		response, err = client.Do(request)
 		return err
