@@ -8,7 +8,9 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
+	"github.com/cenkalti/backoff"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -75,6 +77,23 @@ your control should be treated as untrustworthy.`,
 				Type:        types.StringType,
 				Computed:    true,
 			},
+
+			"DefaultInitialInterval": {
+				Description: "The initial exponential backoff interval.",
+				Type:        types.StringType,
+				Required:    true,
+			},
+
+			"DefaultMaxElapsedTime": {
+				Description: "The total maximum number of seconds before a timeout.",
+				Type:        types.StringType,
+				Required:    true,
+			},
+
+			// DefaultRandomizationFactor
+			// DefaultMultiplier
+			// DefaultMaxInterval
+
 		},
 	}, nil
 }
@@ -120,7 +139,17 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 		request.Header.Set(name, header)
 	}
 
-	response, err := client.Do(request)
+	b := backoff.NewExponentialBackOff()
+	b.MaxElapsedTime = 3 * time.Minute
+
+	var response *http.Response
+
+	backoff.Retry(func() error {
+		fmt.Printf("Calling http.Do function")
+		response, err = client.Do(request)
+		return err
+	}, b)
+
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error making request",
@@ -201,10 +230,15 @@ func isContentTypeText(contentType string) bool {
 }
 
 type modelV0 struct {
-	ID              types.String `tfsdk:"id"`
-	URL             types.String `tfsdk:"url"`
-	RequestHeaders  types.Map    `tfsdk:"request_headers"`
-	ResponseHeaders types.Map    `tfsdk:"response_headers"`
-	ResponseBody    types.String `tfsdk:"response_body"`
-	StatusCode      types.Int64  `tfsdk:"status_code"`
+	ID                         types.String `tfsdk:"id"`
+	URL                        types.String `tfsdk:"url"`
+	RequestHeaders             types.Map    `tfsdk:"request_headers"`
+	ResponseHeaders            types.Map    `tfsdk:"response_headers"`
+	ResponseBody               types.String `tfsdk:"response_body"`
+	StatusCode                 types.Int64  `tfsdk:"status_code"`
+	DefaultInitialInterval     types.Int64  `tfsdk:"default_initial_interval"`
+	DefaultRandomizationFactor types.Int64  `tfsdk:"default_randomization_factor"`
+	DefaultMultiplier          types.Int64  `tfsdk:"default_multiplier"`
+	DefaultMaxInterval         types.Int64  `tfsdk:"default_max_interval"`
+	DefaultMaxElapsedTime      types.Int64  `tfsdk:"default_max_elapsed_time"`
 }
