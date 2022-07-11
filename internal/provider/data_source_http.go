@@ -230,15 +230,15 @@ func isContentTypeText(contentType string) bool {
 }
 
 type modelV0 struct {
-	ID                         types.String `tfsdk:"id"`
-	URL                        types.String `tfsdk:"url"`
-	RequestHeaders             types.Map    `tfsdk:"request_headers"`
-	ResponseHeaders            types.Map    `tfsdk:"response_headers"`
-	ResponseBody               types.String `tfsdk:"response_body"`
-	StatusCode                 types.Int64  `tfsdk:"status_code"`
-	DefaultInitialInterval     types.Int64  `tfsdk:"default_initial_interval"`
-	DefaultRandomizationFactor types.Int64  `tfsdk:"default_randomization_factor"`
-	DefaultMultiplier          types.Int64  `tfsdk:"default_multiplier"`
-	DefaultMaxInterval         types.Int64  `tfsdk:"default_max_interval"`
-	DefaultMaxElapsedTime      types.Int64  `tfsdk:"default_max_elapsed_time"`
+	ID              types.String `tfsdk:"id"`
+	URL             types.String `tfsdk:"url"`
+	RequestHeaders  types.Map    `tfsdk:"request_headers"`
+	ResponseHeaders types.Map    `tfsdk:"response_headers"`
+	ResponseBody    types.String `tfsdk:"response_body"`
+	StatusCode      types.Int64  `tfsdk:"status_code"`
+	// DefaultInitialInterval     types.Int64  `tfsdk:"default_initial_interval"`
+	// DefaultRandomizationFactor types.Int64  `tfsdk:"default_randomization_factor"`
+	// DefaultMultiplier          types.Int64  `tfsdk:"default_multiplier"`
+	// DefaultMaxInterval         types.Int64  `tfsdk:"default_max_interval"`
+	// DefaultMaxElapsedTime      types.Int64  `tfsdk:"default_max_elapsed_time"`
 }
