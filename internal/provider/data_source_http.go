@@ -140,7 +140,7 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 	}
 
 	b := backoff.NewExponentialBackOff()
-	b.MaxElapsedTime = 3 * time.Minute
+	b.MaxElapsedTime = 1 * time.Minute
 
 	var response *http.Response
 
