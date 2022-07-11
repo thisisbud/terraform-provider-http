@@ -19,6 +19,10 @@ jobs:
         with:
           go-version-file: 'go.mod'
           cache: true
+      
+      - name: install signore
+        uses: hashicorp/setup-signore-package@v1      
+      
       -
         name: Import GPG key
         id: import_gpg
