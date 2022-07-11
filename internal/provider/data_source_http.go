@@ -92,7 +92,7 @@ your control should be treated as untrustworthy.`,
 
 			// DefaultRandomizationFactor
 			// DefaultMultiplier
-			// DefaultMaxInterval
+			//  DefaultMaxInterval
 
 		},
 	}, nil
