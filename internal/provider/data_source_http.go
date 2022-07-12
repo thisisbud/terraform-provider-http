@@ -89,19 +89,21 @@ your control should be treated as untrustworthy.`,
 				Type:        types.Int64Type,
 				Optional:    true,
 			},
-
-			// DefaultMaxElapsedTime      types.Int64  `tfsdk:"default_max_elapsed_time"`
-
-			// "DefaultMaxElapsedTime": {
-			// 	Description: "The total maximum number of seconds before a timeout.",
-			// 	Type:        types.StringType,
-			// 	Required:    false,
-			// },
-
-			// DefaultRandomizationFactor
-			// DefaultMultiplier
-			//  DefaultMaxInterval
-
+			"randomization factor": {
+				Description: "Randomization factor for exponential backoff.",
+				Type:        types.Float64Type,
+				Optional:    true,
+			},
+			"multiplier": {
+				Description: "Multiplier for exponential backoff.",
+				Type:        types.Float64Type,
+				Optional:    true,
+			},
+			"max_interval": {
+				Description: "Maximum interval factor for exponential backoff.",
+				Type:        types.Int64Type,
+				Optional:    true,
+			},
 		},
 	}, nil
 }
@@ -124,7 +126,6 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 
 	url := model.URL.Value
 	headers := model.RequestHeaders
-	timeout := model.MaxElapsedTime
 
 	client := &http.Client{}
 
@@ -149,13 +150,18 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 	}
 
 	b := backoff.NewExponentialBackOff()
-	b.MaxElapsedTime = time.Duration(timeout.Value) * time.Second
+	b.MaxElapsedTime = time.Duration(model.MaxElapsedTime.Value) * time.Second
+	b.RandomizationFactor = model.RandomizationFactor.Value
+	b.Multiplier = float64(model.Multiplier.Value)
+	b.MaxInterval = time.Duration(model.MaxInterval.Value)
 
 	var response *http.Response
-
+	retries := 0
 	err = backoff.Retry(func() error {
 		fmt.Printf("Calling http.Do function")
 		response, err = client.Do(request)
+		resp.Diagnostics.AddWarning("Retries", fmt.Sprintf("Number of retries %d", retries))
+		retries++
 		return err
 	}, b)
 
@@ -239,15 +245,15 @@ func isContentTypeText(contentType string) bool {
 }
 
 type modelV0 struct {
-	ID              types.String `tfsdk:"id"`
-	URL             types.String `tfsdk:"url"`
-	RequestHeaders  types.Map    `tfsdk:"request_headers"`
-	ResponseHeaders types.Map    `tfsdk:"response_headers"`
-	ResponseBody    types.String `tfsdk:"response_body"`
-	StatusCode      types.Int64  `tfsdk:"status_code"`
-	InitialInterval types.Int64  `tfsdk:"initial_interval"`
-	// DefaultRandomizationFactor types.Int64  `tfsdk:"default_randomization_factor"`
-	// DefaultMultiplier          types.Int64  `tfsdk:"default_multiplier"`
-	//MaxInterval types.Int64 `tfsdk:"max_interval"`
-	MaxElapsedTime types.Int64 `tfsdk:"max_elapsed_time"`
+	ID                  types.String  `tfsdk:"id"`
+	URL                 types.String  `tfsdk:"url"`
+	RequestHeaders      types.Map     `tfsdk:"request_headers"`
+	ResponseHeaders     types.Map     `tfsdk:"response_headers"`
+	ResponseBody        types.String  `tfsdk:"response_body"`
+	StatusCode          types.Int64   `tfsdk:"status_code"`
+	InitialInterval     types.Int64   `tfsdk:"initial_interval"`
+	MaxElapsedTime      types.Int64   `tfsdk:"max_elapsed_time"`
+	RandomizationFactor types.Float64 `tfsdk:"randomization_factor"`
+	Multiplier          types.Float64 `tfsdk:"multiplier"`
+	MaxInterval         types.Int64   `tfsdk:"max_interval"`
 }
