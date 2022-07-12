@@ -152,7 +152,7 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 	b := backoff.NewExponentialBackOff()
 	b.MaxElapsedTime = time.Duration(model.MaxElapsedTime.Value) * time.Second
 	b.RandomizationFactor = model.RandomizationFactor.Value
-	b.Multiplier = float64(model.Multiplier.Value)
+	b.Multiplier = model.Multiplier.Value
 	b.MaxInterval = time.Duration(model.MaxInterval.Value)
 
 	var response *http.Response
