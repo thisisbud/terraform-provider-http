@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var _ tfsdk.DataSourceType = (*httpDataSourceType)(nil)
@@ -155,12 +156,14 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 	b.Multiplier = model.Multiplier.Value
 	b.MaxInterval = time.Duration(model.MaxInterval.Value)
 
+	tflog.Info(ctx, fmt.Sprintf("Backoff configuration :  %+v", b))
+
 	var response *http.Response
 	retries := 0
 	err = backoff.Retry(func() error {
-		fmt.Printf("Calling http.Do function")
+		tflog.Info(ctx, "Calling http.Do function")
 		response, err = client.Do(request)
-		resp.Diagnostics.AddWarning("Retries", fmt.Sprintf("Number of retries %d", retries))
+		tflog.Info(ctx, fmt.Sprintf("Number of retries %d", retries))
 		retries++
 		return err
 	}, b)
