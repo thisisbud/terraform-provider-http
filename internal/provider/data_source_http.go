@@ -89,7 +89,7 @@ your control should be treated as untrustworthy.`,
 				Type:        types.Int64Type,
 				Optional:    true,
 			},
-			"randomization factor": {
+			"randomization_factor": {
 				Description: "Randomization factor for exponential backoff.",
 				Type:        types.Float64Type,
 				Optional:    true,
