@@ -150,6 +150,22 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 		request.Header.Set(name, header)
 	}
 
+	if model.MaxElapsedTime.Value == 0 {
+		model.MaxElapsedTime.Value = int64(backoff.DefaultMaxElapsedTime)
+	}
+
+	if model.RandomizationFactor.Value == 0 {
+		model.RandomizationFactor.Value = float64(backoff.DefaultRandomizationFactor)
+	}
+
+	if model.Multiplier.Value == 0 {
+		model.Multiplier.Value = float64(backoff.DefaultMultiplier)
+	}
+
+	if model.MaxElapsedTime.Value == 0 {
+		model.MaxInterval.Value = int64(backoff.DefaultMaxElapsedTime)
+	}
+
 	b := backoff.NewExponentialBackOff()
 	b.MaxElapsedTime = time.Duration(model.MaxElapsedTime.Value) * time.Second
 	b.RandomizationFactor = model.RandomizationFactor.Value
