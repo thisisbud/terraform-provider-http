@@ -78,11 +78,19 @@ your control should be treated as untrustworthy.`,
 				Computed:    true,
 			},
 
-			// "DefaultInitialInterval": {
-			// 	Description: "The initial exponential backoff interval.",
-			// 	Type:        types.StringType,
-			// 	Required:    false,
-			// },
+			"initial_interval": {
+				Description: "The initial exponential backoff interval.",
+				Type:        types.Int64Type,
+				Optional:    true,
+			},
+
+			"max_elapsed_time": {
+				Description: "The maximum time to wait for.",
+				Type:        types.Int64Type,
+				Optional:    true,
+			},
+
+			// DefaultMaxElapsedTime      types.Int64  `tfsdk:"default_max_elapsed_time"`
 
 			// "DefaultMaxElapsedTime": {
 			// 	Description: "The total maximum number of seconds before a timeout.",
@@ -116,6 +124,7 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 
 	url := model.URL.Value
 	headers := model.RequestHeaders
+	timeout := model.MaxInterval
 
 	client := &http.Client{}
 
@@ -140,7 +149,7 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 	}
 
 	b := backoff.NewExponentialBackOff()
-	b.MaxElapsedTime = 1 * time.Minute
+	b.MaxElapsedTime = time.Duration(timeout.Value) * time.Second
 
 	var response *http.Response
 
@@ -236,9 +245,9 @@ type modelV0 struct {
 	ResponseHeaders types.Map    `tfsdk:"response_headers"`
 	ResponseBody    types.String `tfsdk:"response_body"`
 	StatusCode      types.Int64  `tfsdk:"status_code"`
-	// DefaultInitialInterval     types.Int64  `tfsdk:"default_initial_interval"`
+	InitialInterval types.Int64  `tfsdk:"initial_interval"`
 	// DefaultRandomizationFactor types.Int64  `tfsdk:"default_randomization_factor"`
 	// DefaultMultiplier          types.Int64  `tfsdk:"default_multiplier"`
-	// DefaultMaxInterval         types.Int64  `tfsdk:"default_max_interval"`
+	MaxInterval types.Int64 `tfsdk:"default_max_interval"`
 	// DefaultMaxElapsedTime      types.Int64  `tfsdk:"default_max_elapsed_time"`
 }

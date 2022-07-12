@@ -15,9 +15,24 @@ func TestDataSource_200(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.2.7",
+				Source:            "MehdiAtBud/http",
+			},
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
+
+								terraform {
+									required_providers {
+						  			http = {
+										source = "MehdiAtBud/http"
+										version ="2.2.7"
+						  			}
+								}
+				  			}
 							data "http" "http_test" {
 								url = "%s/200"
 							}`, testHttpMock.server.URL),
@@ -39,9 +54,24 @@ func TestDataSource_404(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.2.7",
+				Source:            "MehdiAtBud/http",
+			},
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
+						
+							terraform {
+								required_providers {
+					  				http = {
+									source = "MehdiAtBud/http"
+									version ="2.2.7"
+					  				}
+								}
+				  			}
 							data "http" "http_test" {
 								url = "%s/404"
 							}`, testHttpMock.server.URL),
@@ -60,9 +90,24 @@ func TestDataSource_withAuthorizationRequestHeader_200(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.2.7",
+				Source:            "MehdiAtBud/http",
+			},
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
+						
+							terraform {
+								required_providers {
+					  				http = {
+									source = "MehdiAtBud/http"
+									version ="2.2.7"
+					  				}
+								}
+				  			}
 							data "http" "http_test" {
 								url = "%s/restricted"
 
@@ -85,9 +130,24 @@ func TestDataSource_withAuthorizationRequestHeader_403(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.2.7",
+				Source:            "MehdiAtBud/http",
+			},
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
+						
+							terraform {
+								required_providers {
+					  				http = {
+									source = "MehdiAtBud/http"
+									version ="2.2.7"
+					  				}
+								}
+				  			}
 							data "http" "http_test" {
   								url = "%s/restricted"
 
@@ -110,9 +170,24 @@ func TestDataSource_utf8_200(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.2.7",
+				Source:            "MehdiAtBud/http",
+			},
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
+						
+							terraform {
+								required_providers {
+					  				http = {
+									source = "MehdiAtBud/http"
+									version ="2.2.7"
+					  				}
+								}
+				  			}
 							data "http" "http_test" {
   								url = "%s/utf-8/200"
 							}`, testHttpMock.server.URL),
@@ -132,9 +207,24 @@ func TestDataSource_utf16_200(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.2.7",
+				Source:            "MehdiAtBud/http",
+			},
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
+						
+							terraform {
+								required_providers {
+					  				http = {
+									source = "MehdiAtBud/http"
+									version ="2.2.7"
+					  				}
+								}
+				  			}
 							data "http" "http_test" {
   								url = "%s/utf-16/200"
 							}`, testHttpMock.server.URL),
@@ -151,9 +241,24 @@ func TestDataSource_x509cert(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.2.7",
+				Source:            "MehdiAtBud/http",
+			},
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
+						
+							terraform {
+								required_providers {
+					  				http = {
+									source = "MehdiAtBud/http"
+									version ="2.2.7"
+					  				}
+								}
+				  			}
 							data "http" "http_test" {
   								url = "%s/x509-ca-cert/200"
 							}`, testHttpMock.server.URL),
@@ -166,6 +271,7 @@ func TestDataSource_x509cert(t *testing.T) {
 	})
 }
 
+/*
 func TestDataSource_UpgradeFromVersion2_2_0(t *testing.T) {
 	testHttpMock := setUpMockHttpServer()
 	defer testHttpMock.server.Close()
@@ -173,12 +279,12 @@ func TestDataSource_UpgradeFromVersion2_2_0(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		Steps: []resource.TestStep{
 			{
-				ExternalProviders: map[string]resource.ExternalProvider{
-					"http": {
-						VersionConstraint: "2.2.0",
-						Source:            "hashicorp/http",
-					},
-				},
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.2.7",
+				Source:            "MehdiAtBud/http",
+			},
+		},
 				Config: fmt.Sprintf(`
 							data "http" "http_test" {
 								url = "%s/200"
@@ -215,6 +321,7 @@ func TestDataSource_UpgradeFromVersion2_2_0(t *testing.T) {
 		},
 	})
 }
+*/
 
 type TestHttpMock struct {
 	server *httptest.Server
