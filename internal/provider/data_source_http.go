@@ -124,7 +124,7 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 
 	url := model.URL.Value
 	headers := model.RequestHeaders
-	timeout := model.MaxInterval
+	timeout := model.MaxElapsedTime
 
 	client := &http.Client{}
 
@@ -248,6 +248,6 @@ type modelV0 struct {
 	InitialInterval types.Int64  `tfsdk:"initial_interval"`
 	// DefaultRandomizationFactor types.Int64  `tfsdk:"default_randomization_factor"`
 	// DefaultMultiplier          types.Int64  `tfsdk:"default_multiplier"`
-	MaxInterval types.Int64 `tfsdk:"default_max_interval"`
-	// DefaultMaxElapsedTime      types.Int64  `tfsdk:"default_max_elapsed_time"`
+	//MaxInterval types.Int64 `tfsdk:"max_interval"`
+	MaxElapsedTime types.Int64 `tfsdk:"max_elapsed_time"`
 }
