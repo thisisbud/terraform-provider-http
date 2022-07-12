@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"mime"
@@ -150,6 +151,10 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 		request.Header.Set(name, header)
 	}
 
+	if model.InitialInterval.Value == 0 {
+		model.InitialInterval.Value = int64(backoff.DefaultInitialInterval)
+	}
+
 	if model.MaxElapsedTime.Value == 0 {
 		model.MaxElapsedTime.Value = int64(backoff.DefaultMaxElapsedTime)
 	}
@@ -172,7 +177,8 @@ func (d *httpDataSource) Read(ctx context.Context, req tfsdk.ReadDataSourceReque
 	b.Multiplier = model.Multiplier.Value
 	b.MaxInterval = time.Duration(model.MaxInterval.Value)
 
-	tflog.Info(ctx, fmt.Sprintf("Backoff configuration :  %+v", b))
+	s, err := json.MarshalIndent(b, "", "   ")
+	tflog.Info(ctx, fmt.Sprintf("Backoff configuration :  %s", s))
 
 	var response *http.Response
 	retries := 0
