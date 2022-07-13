@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -271,7 +272,7 @@ func TestDataSource_x509cert(t *testing.T) {
 	})
 }
 
-func TestDataSource_NonRegisteredDomain(t *testing.T) {
+func TestDataSource_NonRegisteredDomainBackoff(t *testing.T) {
 	testHttpMock := setUpMockHttpServer()
 	defer testHttpMock.server.Close()
 
@@ -279,7 +280,7 @@ func TestDataSource_NonRegisteredDomain(t *testing.T) {
 		ProtoV6ProviderFactories: protoV6ProviderFactories(),
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
-				VersionConstraint: "2.2.15",
+				VersionConstraint: "2.2.16",
 				Source:            "MehdiAtBud/http",
 			},
 		},
@@ -291,19 +292,57 @@ func TestDataSource_NonRegisteredDomain(t *testing.T) {
 								required_providers {
 					  				http = {
 									source = "MehdiAtBud/http"
-									version ="2.2.15"
+									version ="2.2.16"
 					  				}
 								}
 				  			}
 							data "http" "http_test" {
-								url = "non-existing-domain.com"
+								url = "https://non-existing.thisisbud.com"
 								max_elapsed_time = 10
 								initial_interval = 100
 								multiplier = 1.2
+								max_interval = 5000
+							}`,
+				Check:       resource.ComposeTestCheckFunc(),
+				ExpectError: regexp.MustCompile("no such host"),
+			},
+		},
+	})
+}
+
+func TestDataSource_RegisteredDomainBackoff(t *testing.T) {
+	testHttpMock := setUpMockHttpServer()
+	defer testHttpMock.server.Close()
+
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.2.16",
+				Source:            "MehdiAtBud/http",
+			},
+		},
+		Steps: []resource.TestStep{
+			{
+				Config: `
+							terraform {
+								required_providers {
+					  				http = {
+									source = "MehdiAtBud/http"
+									version ="2.2.16"
+					  				}
+								}
+				  			}
+
+							data "http" "http_test" {
+								url = "https://example.com"
+								max_elapsed_time = 10
+								initial_interval = 100
+								multiplier = 1.2
+								max_interval = 5000
 							}`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.http.http_test", "response_body", ""),
-					resource.TestCheckResourceAttr("data.http.http_test", "status_code", "404"),
+					resource.TestCheckResourceAttr("data.http.http_test", "status_code", "200"),
 				),
 			},
 		},
