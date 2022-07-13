@@ -27,7 +27,7 @@ func main() {
 	flag.Parse()
 
 	err := providerserver.Serve(context.Background(), provider.New, providerserver.ServeOpts{
-		Address: "registry.terraform.io/MehdiAtBud/http",
+		Address: "registry.terraform.io/hashicorp/http",
 		Debug:   debug,
 	})
 	if err != nil {

@@ -271,57 +271,44 @@ func TestDataSource_x509cert(t *testing.T) {
 	})
 }
 
-/*
-func TestDataSource_UpgradeFromVersion2_2_0(t *testing.T) {
+func TestDataSource_NonRegisteredDomain(t *testing.T) {
 	testHttpMock := setUpMockHttpServer()
 	defer testHttpMock.server.Close()
 
-	resource.Test(t, resource.TestCase{
-		Steps: []resource.TestStep{
-			{
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: protoV6ProviderFactories(),
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
-				VersionConstraint: "2.2.7",
+				VersionConstraint: "2.2.15",
 				Source:            "MehdiAtBud/http",
 			},
 		},
-				Config: fmt.Sprintf(`
-							data "http" "http_test" {
-								url = "%s/200"
-							}`, testHttpMock.server.URL),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.http.http_test", "response_body", "1.0.0"),
-					resource.TestCheckResourceAttr("data.http.http_test", "response_headers.Content-Type", "text/plain"),
-					resource.TestCheckResourceAttr("data.http.http_test", "response_headers.X-Single", "foobar"),
-					resource.TestCheckResourceAttr("data.http.http_test", "response_headers.X-Double", "1, 2"),
-				),
-			},
+		Steps: []resource.TestStep{
 			{
-				ProtoV6ProviderFactories: protoV6ProviderFactories(),
-				Config: fmt.Sprintf(`
+				Config: `
+						
+							terraform {
+								required_providers {
+					  				http = {
+									source = "MehdiAtBud/http"
+									version ="2.2.15"
+					  				}
+								}
+				  			}
 							data "http" "http_test" {
-								url = "%s/200"
-							}`, testHttpMock.server.URL),
-				PlanOnly: true,
-			},
-			{
-				ProtoV6ProviderFactories: protoV6ProviderFactories(),
-				Config: fmt.Sprintf(`
-							data "http" "http_test" {
-								url = "%s/200"
-							}`, testHttpMock.server.URL),
+								url = "non-existing-domain.com"
+								max_elapsed_time = 10
+								initial_interval = 100
+								multiplier = 1.2
+							}`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.http.http_test", "response_body", "1.0.0"),
-					resource.TestCheckResourceAttr("data.http.http_test", "response_headers.Content-Type", "text/plain"),
-					resource.TestCheckResourceAttr("data.http.http_test", "response_headers.X-Single", "foobar"),
-					resource.TestCheckResourceAttr("data.http.http_test", "response_headers.X-Double", "1, 2"),
-					resource.TestCheckResourceAttr("data.http.http_test", "status_code", "200"),
+					resource.TestCheckResourceAttr("data.http.http_test", "response_body", ""),
+					resource.TestCheckResourceAttr("data.http.http_test", "status_code", "404"),
 				),
 			},
 		},
 	})
 }
-*/
 
 type TestHttpMock struct {
 	server *httptest.Server

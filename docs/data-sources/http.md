@@ -12,6 +12,8 @@ description: |-
   mechanism to authenticate the remote server except for general verification of
   the server certificate's chain of trust. Data retrieved from servers not under
   your control should be treated as untrustworthy.
+  In addition to this there is possibility to configure exponential backoff retries that can be bounded
+  both by max elapsed time and max interval between retries.
 ---
 
 # http (Data Source)
@@ -29,9 +31,21 @@ mechanism to authenticate the remote server except for general verification of
 the server certificate's chain of trust. Data retrieved from servers not under
 your control should be treated as untrustworthy.
 
+In addition to this there is possibility to configure exponential backoff retries that can be bounded
+both by max elapsed time and max interval between retries.
+
 ## Example Usage
 
 ```terraform
+terraform {
+  required_providers {
+    http = {
+      source  = "MehdiAtBud/http"
+      version = "2.2.15"
+    }
+  }
+}
+
 # The following example shows how to issue an HTTP GET request supplying
 # an optional request header.
 data "http" "example" {
@@ -41,6 +55,18 @@ data "http" "example" {
   request_headers = {
     Accept = "application/json"
   }
+
+  max_elapsed_time = 10
+  initial_interval = 100
+  multiplier       = 1.2
+  max_interval     = 500000000000000000
+}
+
+
+
+
+provider "http" {
+  # Configuration options
 }
 ```
 
@@ -101,6 +127,11 @@ checks are available with Terraform v1.2.0 and later.
 
 ### Optional
 
+- `initial_interval` (Number) The initial exponential backoff interval.
+- `max_elapsed_time` (Number) The maximum time to wait for.
+- `max_interval` (Number) Maximum interval factor for exponential backoff.
+- `multiplier` (String) Multiplier for exponential backoff.
+- `randomization_factor` (String) Randomization factor for exponential backoff.
 - `request_headers` (Map of String) A map of request header field names and values.
 
 ### Read-Only
