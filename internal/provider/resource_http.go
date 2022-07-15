@@ -58,12 +58,10 @@ func resourceUser() *schema.Resource {
 }
 
 func Create(d *schema.ResourceData, meta interface{}) error {
-
 	url := d.Get("url").(string)
 
 	request, err := http.NewRequestWithContext(context.Background(), "GET", url, nil)
 	if err != nil {
-
 		return err
 	}
 
@@ -84,7 +82,6 @@ func Create(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	d.SetId(url)
-
 	return nil
 }
 

@@ -161,10 +161,13 @@ func Read(ctx context.Context, req *schema.ResourceData, meta interface{}) diag.
 		return d
 	}
 
-	if response != nil {
-		if response.Body != nil {
-			defer response.Body.Close()
-		}
+	if response == nil {
+		d = append(d, diag.Diagnostic{Summary: "Error while making request", Detail: "response was nil"})
+		return d
+	}
+
+	if response.Body != nil {
+		defer response.Body.Close()
 	}
 
 	contentType := response.Header.Get("Content-Type")
@@ -271,7 +274,7 @@ func makeExponentialBackoffRequest(ctx context.Context, request *http.Request, r
 
 	retries := 0
 	err = backoff.Retry(func() error {
-		tflog.Info(ctx, fmt.Sprintf("\nCalling http.Do URL : %s`\n", request.RequestURI))
+		tflog.Info(ctx, fmt.Sprintf("\nCalling http.Do URL : [%s]\n", request.RequestURI))
 		response, err = client.Do(request)
 		tflog.Info(ctx, fmt.Sprintf("\nNumber of retries %d\n", retries))
 		tflog.Info(ctx, fmt.Sprintf("\nError %v\n", err))
