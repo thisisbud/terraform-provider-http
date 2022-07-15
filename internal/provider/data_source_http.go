@@ -131,8 +131,6 @@ func Read(ctx context.Context, req *schema.ResourceData, meta interface{}) diag.
 	d := diag.Diagnostics{}
 	url := req.Get("url").(string)
 
-	tflog.Info(ctx, fmt.Sprintf("\nStarting.. requesting URL [%s] \n", url))
-
 	headers := req.Get("request_headers").(map[string]interface{})
 
 	request, err := http.NewRequestWithContext(ctx, "GET", url, nil)
@@ -149,6 +147,8 @@ func Read(ctx context.Context, req *schema.ResourceData, meta interface{}) diag.
 	}
 
 	var response *http.Response
+	tflog.Info(ctx, fmt.Sprintf("\nStarting.. requesting URL [%s] \n", url))
+	tflog.Info(ctx, fmt.Sprintf("\nRequest contents [%+v] \n", request))
 	errSummary, errDesc := makeExponentialBackoffRequest(ctx,
 		request,
 		response,
@@ -277,7 +277,7 @@ func makeExponentialBackoffRequest(ctx context.Context, request *http.Request, r
 
 	retries := 0
 	err = backoff.Retry(func() error {
-		tflog.Info(ctx, fmt.Sprintf("\nCalling http.Do URL : [%s]\n", request.RequestURI))
+		tflog.Info(ctx, fmt.Sprintf("\nCalling http.Do URL : [%+v]\n", request))
 		response, err = client.Do(request)
 		tflog.Info(ctx, fmt.Sprintf("\nNumber of retries %d\n", retries))
 		tflog.Info(ctx, fmt.Sprintf("\nError %v\n", err))
