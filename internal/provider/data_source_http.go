@@ -130,6 +130,9 @@ func dataSourceScaffolding() *schema.Resource {
 func Read(ctx context.Context, req *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	d := diag.Diagnostics{}
 	url := req.Get("url").(string)
+
+	tflog.Info(ctx, fmt.Sprintf("\nStarting.. requesting URL [%s] \n", url))
+
 	headers := req.Get("request_headers").(map[string]interface{})
 
 	request, err := http.NewRequestWithContext(ctx, "GET", url, nil)
