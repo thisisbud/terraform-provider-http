@@ -16,10 +16,9 @@ func resourceUser() *schema.Resource {
 		Delete: Delete,
 
 		Schema: map[string]*schema.Schema{
-			"user": {
+			"url": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 
 			"id": {

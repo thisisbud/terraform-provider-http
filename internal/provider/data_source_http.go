@@ -271,9 +271,10 @@ func makeExponentialBackoffRequest(ctx context.Context, request *http.Request, r
 
 	retries := 0
 	err = backoff.Retry(func() error {
-		tflog.Info(ctx, "Calling http.Do function")
+		tflog.Info(ctx, fmt.Sprintf("\nCalling http.Do URL : %s`\n", request.RequestURI))
 		response, err = client.Do(request)
 		tflog.Info(ctx, fmt.Sprintf("\nNumber of retries %d\n", retries))
+		tflog.Info(ctx, fmt.Sprintf("\nError %v\n", err))
 		retries++
 		return err
 	}, b)
