@@ -65,11 +65,8 @@ func Create(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	var response *http.Response
-
-	errSummary, errDesc := makeExponentialBackoffRequest(context.Background(),
+	_, errSummary, errDesc := makeExponentialBackoffRequest(context.Background(),
 		request,
-		response,
 		int64(d.Get("initial_interval").(int)),
 		int64(d.Get("max_elapsed_time").(int)),
 		int64(d.Get("max_interval").(int)),

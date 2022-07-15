@@ -149,9 +149,8 @@ func Read(ctx context.Context, req *schema.ResourceData, meta interface{}) diag.
 	var response *http.Response
 	tflog.Info(ctx, fmt.Sprintf("\nStarting.. requesting URL [%s] \n", url))
 	tflog.Info(ctx, fmt.Sprintf("\nRequest contents [%+v] \n", request))
-	errSummary, errDesc := makeExponentialBackoffRequest(ctx,
+	response, errSummary, errDesc := makeExponentialBackoffRequest(ctx,
 		request,
-		response,
 		int64(req.Get("initial_interval").(int)),
 		int64(req.Get("max_elapsed_time").(int)),
 		int64(req.Get("max_interval").(int)),
@@ -232,7 +231,7 @@ func isContentTypeText(contentType string) bool {
 	return false
 }
 
-func makeExponentialBackoffRequest(ctx context.Context, request *http.Request, response *http.Response, initialInterval, maxElapsedTime, maxInterval int64, randomization_fct, multpl string) (string, string) {
+func makeExponentialBackoffRequest(ctx context.Context, request *http.Request, initialInterval, maxElapsedTime, maxInterval int64, randomization_fct, multpl string) (*http.Response, string, string) {
 	var randomization_factor, multiplier float64
 	var err error
 	client := &http.Client{}
@@ -245,7 +244,7 @@ func makeExponentialBackoffRequest(ctx context.Context, request *http.Request, r
 	}
 
 	if maxElapsedTime == 0 {
-		maxElapsedTime = int64(backoff.DefaultMaxElapsedTime)
+		maxElapsedTime = int64(60)
 	}
 
 	if maxInterval == 0 {
@@ -255,14 +254,14 @@ func makeExponentialBackoffRequest(ctx context.Context, request *http.Request, r
 	if len(randomization_fct) > 0 {
 		randomization_factor, err = strconv.ParseFloat(randomization_fct, 64)
 		if err != nil {
-			return "error converting randomization_factor to float64", fmt.Sprintf("%s", err)
+			return nil, "error converting randomization_factor to float64", fmt.Sprintf("%s", err)
 		}
 	}
 
 	if len(multpl) > 0 {
 		multiplier, err = strconv.ParseFloat(multpl, 64)
 		if err != nil {
-			return "error converting multiplier to float64", fmt.Sprintf("%s", err)
+			return nil, "error converting multiplier to float64", fmt.Sprintf("%s", err)
 		}
 	}
 
@@ -276,9 +275,11 @@ func makeExponentialBackoffRequest(ctx context.Context, request *http.Request, r
 	tflog.Info(ctx, fmt.Sprintf("Backoff configuration :  %s", s))
 
 	retries := 0
+	var response *http.Response
 	err = backoff.Retry(func() error {
 		tflog.Info(ctx, fmt.Sprintf("\nCalling http.Do URL : [%+v]\n", request))
 		response, err = client.Do(request)
+		fmt.Printf("in backoff response pointer %p", response)
 		tflog.Info(ctx, fmt.Sprintf("\nNumber of retries %d\n", retries))
 		tflog.Info(ctx, fmt.Sprintf("\nError %v\n", err))
 		retries++
@@ -286,8 +287,8 @@ func makeExponentialBackoffRequest(ctx context.Context, request *http.Request, r
 	}, b)
 
 	if err != nil {
-		return "Error making request", fmt.Sprintf("Error making request: %s", err)
+		return nil, "Error making request", fmt.Sprintf("Error making request: %s", err)
 	}
 
-	return "", ""
+	return response, "", ""
 }
