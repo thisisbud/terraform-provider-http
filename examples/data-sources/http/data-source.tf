@@ -2,14 +2,16 @@ terraform {
   required_providers {
     http = {
       source  = "MehdiAtBud/http"
-      version = "2.2.16"
+      version = "2.2.19"
     }
   }
 }
 
 # The following example shows how to issue an HTTP GET request supplying
 # an optional request header.
-data "http" "example" {
+data "scaffolding_data_source" "example" {
+  provider = http
+
   url = "https://checkpoint-api.hashicorp.com/v1/check/terraform"
 
   # Optional request headers

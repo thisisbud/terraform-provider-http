@@ -130,7 +130,7 @@ func dataSourceScaffolding() *schema.Resource {
 func Read(ctx context.Context, req *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	d := diag.Diagnostics{}
 	url := req.Get("url").(string)
-	headers := req.Get("request_headers").(map[string]string)
+	headers := req.Get("request_headers").(map[string]interface{})
 
 	request, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -142,7 +142,7 @@ func Read(ctx context.Context, req *schema.ResourceData, meta interface{}) diag.
 	}
 
 	for name, value := range headers {
-		request.Header.Set(name, value)
+		request.Header.Set(name, value.(string))
 	}
 
 	var response *http.Response
