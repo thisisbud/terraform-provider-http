@@ -78,9 +78,9 @@ func CreateUser(d *schema.ResourceData, meta interface{}) error {
 	errSummary, errDesc := makeExponentialBackoffRequest(context.Background(),
 		request,
 		response,
-		d.Get("initial_interval").(int64),
-		d.Get("max_elapsed_time").(int64),
-		d.Get("max_interval").(int64),
+		int64(d.Get("initial_interval").(int)),
+		int64(d.Get("max_elapsed_time").(int)),
+		int64(d.Get("max_interval").(int)),
 		d.Get("randomization_factor").(string),
 		d.Get("multiplier").(string),
 	)

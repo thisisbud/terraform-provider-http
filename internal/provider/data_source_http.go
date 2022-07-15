@@ -149,9 +149,9 @@ func Read(ctx context.Context, req *schema.ResourceData, meta interface{}) diag.
 	errSummary, errDesc := makeExponentialBackoffRequest(ctx,
 		request,
 		response,
-		req.Get("initial_interval").(int64),
-		req.Get("max_elapsed_time").(int64),
-		req.Get("max_interval").(int64),
+		int64(req.Get("initial_interval").(int)),
+		int64(req.Get("max_elapsed_time").(int)),
+		int64(req.Get("max_interval").(int)),
 		req.Get("randomization_factor").(string),
 		req.Get("multiplier").(string),
 	)
