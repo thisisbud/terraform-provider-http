@@ -10,21 +10,16 @@ import (
 
 func resourceUser() *schema.Resource {
 	return &schema.Resource{
-		Create: CreateUser,
-		Update: UpdateUser,
-		Read:   ReadUser,
-		Delete: DeleteUser,
+		Create: Create,
+		Update: Update,
+		Read:   ReadUrl,
+		Delete: Delete,
 
 		Schema: map[string]*schema.Schema{
 			"user": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
-			},
-			"url": {
-				Description: "The URL for the request. Supported schemes are `http` and `https`.",
-				Type:        schema.TypeString,
-				Required:    true,
 			},
 
 			"id": {
@@ -63,7 +58,7 @@ func resourceUser() *schema.Resource {
 	}
 }
 
-func CreateUser(d *schema.ResourceData, meta interface{}) error {
+func Create(d *schema.ResourceData, meta interface{}) error {
 
 	url := d.Get("url").(string)
 
@@ -94,17 +89,17 @@ func CreateUser(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func UpdateUser(d *schema.ResourceData, meta interface{}) error {
+func Update(d *schema.ResourceData, meta interface{}) error {
+
+	return ReadUrl(d, meta)
+}
+
+func ReadUrl(d *schema.ResourceData, meta interface{}) error {
 
 	return nil
 }
 
-func ReadUser(d *schema.ResourceData, meta interface{}) error {
-
-	return nil
-}
-
-func DeleteUser(d *schema.ResourceData, meta interface{}) error {
+func Delete(d *schema.ResourceData, meta interface{}) error {
 
 	d.SetId("")
 

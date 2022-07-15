@@ -161,7 +161,11 @@ func Read(ctx context.Context, req *schema.ResourceData, meta interface{}) diag.
 		return d
 	}
 
-	defer response.Body.Close()
+	if response != nil {
+		if response.Body != nil {
+			defer response.Body.Close()
+		}
+	}
 
 	contentType := response.Header.Get("Content-Type")
 	if !isContentTypeText(contentType) {
