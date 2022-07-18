@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -14,7 +15,7 @@ func TestResourceSetsUrlInState(t *testing.T) {
 		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
-				VersionConstraint: "2.2.27",
+				VersionConstraint: "2.3",
 				Source:            "MehdiAtBud/http",
 			},
 		},
@@ -25,7 +26,7 @@ func TestResourceSetsUrlInState(t *testing.T) {
 					required_providers {
 						http = {
 						source = "MehdiAtBud/http"
-						version ="2.2.27"
+						version ="2.3"
 						  }
 					}
 				  }
@@ -42,6 +43,47 @@ func TestResourceSetsUrlInState(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("http-wait.example", "url", "https://example.com"),
 				),
+			},
+		},
+	})
+}
+
+func TestResourceSNonExistingURL(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
+		ExternalProviders: map[string]resource.ExternalProvider{
+			"http": {
+				VersionConstraint: "2.3.0",
+				Source:            "MehdiAtBud/http",
+			},
+		},
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				terraform {
+					required_providers {
+						http = {
+						source = "MehdiAtBud/http"
+						version ="2.3.0"
+						  }
+					}
+				  }
+				
+				resource "http-wait" "example" {
+					provider = http
+					url = "https://non-existing.thisisbud.com"
+				  
+					max_elapsed_time = 60
+					initial_interval = 100
+					multiplier       = "1.2"
+					max_interval     = 50000
+				  }`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("http-wait.example", "url", "https://example.com"),
+				),
+				ExpectError: regexp.MustCompile("no such host"),
 			},
 		},
 	})
