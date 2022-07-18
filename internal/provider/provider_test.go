@@ -1,10 +1,12 @@
 package provider
 
-/*
+import (
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
+
 //nolint:unparam
-func protoV6ProviderFactories() map[string]func() (tfprotov6.ProviderServer, error) {
-	return map[string]func() (tfprotov6.ProviderServer, error){
-		"http": providerserver.NewProtocol6WithError(New()),
-	}
+var providerFactories = map[string]func() (*schema.Provider, error){
+	"http-wait": func() (*schema.Provider, error) {
+		return New("dev")(), nil
+	},
 }
-*/

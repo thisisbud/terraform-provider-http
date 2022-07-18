@@ -10,9 +10,6 @@ install: build
 lint:
 	golangci-lint run
 
-generate:
-	go generate ./...
-
 fmt:
 	gofmt -s -w -e .
 

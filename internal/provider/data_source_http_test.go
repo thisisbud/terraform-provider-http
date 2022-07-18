@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestDataSource_200(t *testing.T) {
@@ -15,7 +16,9 @@ func TestDataSource_200(t *testing.T) {
 	defer testHttpMock.server.Close()
 
 	resource.UnitTest(t, resource.TestCase{
-		//ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
 				VersionConstraint: "2.2.7",
@@ -54,7 +57,9 @@ func TestDataSource_404(t *testing.T) {
 	defer testHttpMock.server.Close()
 
 	resource.UnitTest(t, resource.TestCase{
-		//ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
 				VersionConstraint: "2.2.7",
@@ -90,7 +95,9 @@ func TestDataSource_withAuthorizationRequestHeader_200(t *testing.T) {
 	defer testHttpMock.server.Close()
 
 	resource.UnitTest(t, resource.TestCase{
-		//ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
 				VersionConstraint: "2.2.7",
@@ -130,7 +137,9 @@ func TestDataSource_withAuthorizationRequestHeader_403(t *testing.T) {
 	defer testHttpMock.server.Close()
 
 	resource.UnitTest(t, resource.TestCase{
-		//ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
 				VersionConstraint: "2.2.7",
@@ -170,7 +179,10 @@ func TestDataSource_utf8_200(t *testing.T) {
 	defer testHttpMock.server.Close()
 
 	resource.UnitTest(t, resource.TestCase{
-		//ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
+		ProviderFactories: providerFactories,
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
 				VersionConstraint: "2.2.7",
@@ -207,7 +219,9 @@ func TestDataSource_utf16_200(t *testing.T) {
 	defer testHttpMock.server.Close()
 
 	resource.UnitTest(t, resource.TestCase{
-		//ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
 				VersionConstraint: "2.2.7",
@@ -241,7 +255,9 @@ func TestDataSource_x509cert(t *testing.T) {
 	defer testHttpMock.server.Close()
 
 	resource.UnitTest(t, resource.TestCase{
-		//ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
 				VersionConstraint: "2.2.7",
@@ -277,7 +293,9 @@ func TestDataSource_NonRegisteredDomainBackoff(t *testing.T) {
 	defer testHttpMock.server.Close()
 
 	resource.UnitTest(t, resource.TestCase{
-		//ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
 				VersionConstraint: "2.2.16",
@@ -315,7 +333,9 @@ func TestDataSource_RegisteredDomainBackoff(t *testing.T) {
 	defer testHttpMock.server.Close()
 
 	resource.UnitTest(t, resource.TestCase{
-		//ProtoV6ProviderFactories: protoV6ProviderFactories(),
+		Providers: map[string]*schema.Provider{
+			"http-wait": New("dev")(),
+		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
 				VersionConstraint: "2.2.16",

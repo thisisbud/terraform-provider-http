@@ -2,14 +2,12 @@ terraform {
   required_providers {
     http = {
       source  = "MehdiAtBud/http"
-      version = "2.2.19"
+      version = "2.2.27"
     }
   }
 }
 
-# The following example shows how to issue an HTTP GET request supplying
-# an optional request header.
-data "scaffolding_data_source" "example" {
+data "http-wait" "example" {
   provider = http
 
   url = "https://checkpoint-api.hashicorp.com/v1/check/terraform"
@@ -19,7 +17,19 @@ data "scaffolding_data_source" "example" {
     Accept = "application/json"
   }
 
-  max_elapsed_time = 10
+  max_elapsed_time     = 10
+  initial_interval     = 100
+  multiplier           = "1.2"
+  max_interval         = 50000
+  randomization_factor = 3
+}
+
+
+resource "http-wait" "example" {
+  provider = http
+  url      = "https://example.com"
+
+  max_elapsed_time = 60
   initial_interval = 100
   multiplier       = "1.2"
   max_interval     = 50000

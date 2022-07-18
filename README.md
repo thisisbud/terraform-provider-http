@@ -1,7 +1,11 @@
 # Terraform Provider: HTTP
 
 This HTTP provider requests an URL and will retry the request in case of error using an exponential backoff logic.
+This provider can be used as :
+- A data source
+- A resource
  
+ See example usage below
 
 ## Requirements
 
@@ -19,28 +23,47 @@ terraform {
   required_providers {
     http = {
       source  = "MehdiAtBud/http"
-      version = "2.2.15"
+      version = "2.2.27"
     }
   }
 }
 
-# The following example shows how to issue an HTTP GET request supplying
-# an optional request header.
-data "http" "example" {
+data "http-wait" "example" {
+  provider = http
+
   url = "https://checkpoint-api.hashicorp.com/v1/check/terraform"
+
+  # Optional request headers
+  request_headers = {
+    Accept = "application/json"
+  }
 
   max_elapsed_time = 10
   initial_interval = 100
   multiplier       = "1.2"
   max_interval     = 50000
+  randomization_factor = 3
+}
+
+
+
+resource "http-wait" "example" {
+  provider = http
+  url = "https://example.com"
+
+  max_elapsed_time = 60
+  initial_interval = 100
+  multiplier       = "1.2"
+  max_interval     = 50000
+}
 }
 ```
 
 - `url` : The URL to request.
-- `max_elapsed_time` : Maximum seconds to wait for in total.
-- `initial_interval` : Duration of initial interval in milliseconds.
-- `multiplier` : Decimal number representing the multiplication factor for exponential backoff logic.
-- `max_interval` : Maximum interval in milliseconds after multiplier has been applied.
+- `max_elapsed_time` : Maximum **seconds** to wait for in total.
+- `initial_interval` : Duration of initial interval in **milliseconds**.
+- `multiplier` : **Decimal number** representing the multiplication factor for exponential backoff logic.
+- `max_interval` : Maximum interval in **milliseconds** after multiplier has been applied.
 
 
 ## Development
