@@ -15,7 +15,7 @@ func TestResourceSetsUrlInState(t *testing.T) {
 		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
-				VersionConstraint: "2.3",
+				VersionConstraint: "2.3.1",
 				Source:            "MehdiAtBud/http",
 			},
 		},
@@ -26,7 +26,7 @@ func TestResourceSetsUrlInState(t *testing.T) {
 					required_providers {
 						http = {
 						source = "MehdiAtBud/http"
-						version ="2.3"
+						version ="2.3.1"
 						  }
 					}
 				  }
@@ -55,7 +55,7 @@ func TestResourceSNonExistingURL(t *testing.T) {
 		},
 		ExternalProviders: map[string]resource.ExternalProvider{
 			"http": {
-				VersionConstraint: "2.3.0",
+				VersionConstraint: "2.3.1",
 				Source:            "MehdiAtBud/http",
 			},
 		},
@@ -66,7 +66,7 @@ func TestResourceSNonExistingURL(t *testing.T) {
 					required_providers {
 						http = {
 						source = "MehdiAtBud/http"
-						version ="2.3.0"
+						version ="2.3.1"
 						  }
 					}
 				  }
