@@ -33,7 +33,7 @@ jobs:
       - name: Run linters
         uses: golangci/golangci-lint-action@v3
         with:
-          version: 1.46.2
+          version: v1.46.2
 
       - name: Generate
         run: make generate
